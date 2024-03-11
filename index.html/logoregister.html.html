@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Details - Logo Creation Competition</title>
+  <style>
+    /* Styles from previous code */
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('https://images.unsplash.com/photo-1532592061422-2020a19d4eac');
+      background-size: cover;
+      background-position: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    /* Additional styles for better readability */
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .input-group button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .input-group button:hover {
+      background-color: #0056b3;
+    }
+    .toggle-form {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .toggle-form a {
+      text-decoration: none;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>User Details - Logo Creation Competition</h2>
+    <!-- User details form -->
+    <form id="userDetailsForm" onsubmit="saveUserDetails(event)">
+      <div class="input-group">
+        <label for="name1">Name 1:</label>
+        <input type="text" id="name1" name="name1" required>
+      </div>
+      <div class="input-group">
+        <label for="name2">Name 2:</label>
+        <input type="text" id="name2" name="name2" required>
+      </div>
+      <div class="input-group">
+        <label for="class">Class:</label>
+        <input type="text" id="class" name="class" required>
+      </div>
+      <div class="input-group">
+        <label for="teamName">Team Name:</label>
+        <input type="text" id="teamName" name="teamName" required>
+      </div>
+      <div class="input-group">
+        <button type="submit">Register</button>
+      </div>
+    </form>
+
+    <!-- View user details history button -->
+    <div class="input-group">
+      <label for="password"> only admin can view the history:</label>
+      <input type="password" id="password" required>
+      <button onclick="authenticatePassword()">Submit</button>
+    </div>
+
+    <!-- Container to display user details history -->
+    <div id="historyContainer" style="display: none;"></div>
+  </div>
+
+  <script>
+    function saveUserDetails(event) {
+      event.preventDefault();
+      // Get form inputs
+      const name1 = document.getElementById('name1').value;
+      const name2 = document.getElementById('name2').value;
+      const classValue = document.getElementById('class').value;
+      const teamName = document.getElementById('teamName').value;
+      // Create object to store user details
+      const userDetails = {
+        name1: name1,
+        name2: name2,
+        class: classValue,
+        teamName: teamName
+      };
+      // Retrieve existing user details from localStorage or initialize empty array
+      let userHistory = JSON.parse(localStorage.getItem('userHistory')) || [];
+      // Add new user details to the array
+      userHistory.push(userDetails);
+      // Store updated user history back to localStorage
+      localStorage.setItem('userHistory', JSON.stringify(userHistory));
+      alert('User details saved successfully!');
+      // Clear form inputs
+      document.getElementById('name1').value = '';
+      document.getElementById('name2').value = '';
+      document.getElementById('class').value = '';
+      document.getElementById('teamName').value = '';
+    }
+
+    function authenticatePassword() {
+      const password = document.getElementById('password').value;
+      // Replace 'your_password' with the actual password you want to use
+      if (password === 'nooneshouldknow') {
+        // Correct password, display user details history
+        document.getElementById('historyContainer').style.display = 'block';
+        viewUserDetailsHistory();
+      } else {
+        alert('Incorrect password. Please try again.');
+      }
+    }
+
+    function viewUserDetailsHistory() {
+      // Retrieve user history from localStorage
+      const userHistory = JSON.parse(localStorage.getItem('userHistory'));
+      if (userHistory && userHistory.length > 0) {
+        // Display user details history
+        const userDetailsList = document.createElement('ul');
+        userDetailsList.setAttribute('id', 'userDetailsList');
+        userHistory.forEach(user => {
+          const userDetailsItem = document.createElement('li');
+          userDetailsItem.innerHTML = `
+            <strong>Name 1:</strong> ${user.name1}<br>
+            <strong>Name 2:</strong> ${user.name2}<br>
+            <strong>Class:</strong> ${user.class}<br>
+            <strong>Team Name:</strong> ${user.teamName}<br><br>
+          `;
+          userDetailsList.appendChild(userDetailsItem);
+        });
+        // Clear existing history and display new history
+        const historyContainer = document.getElementById('historyContainer');
+        historyContainer.innerHTML = '';
+        historyContainer.appendChild(userDetailsList);
+      } else {
+        alert('No user details found in history.');
+      }
+    }
+  </script>
+</body>
+</html>
